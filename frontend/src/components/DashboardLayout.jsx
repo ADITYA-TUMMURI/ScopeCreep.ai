@@ -11,18 +11,21 @@ import WatchdogAlertsFeed from "./WatchdogAlertsFeed";
  *   • prdText / isBaselineLocked — PRD baseline document
  *   • chatLogs                   — developer chat message history
  *   • alerts                     — scope creep alert feed
- *   • isAnalyzing                — loading state during simulated LLM call
+ *   • isAnalyzing                — loading state during backend LLM call
  *
- * The simulateBackendAnalysis function fakes a 1500ms LLM network
- * round-trip: it appends the developer message to the chat log,
- * shows a "processing" watchdog acknowledgement, then generates a
- * dynamic HIGH-severity alert and unshifts it to the top of the feed.
+ * The simulateBackendAnalysis function sends the PRD context and
+ * developer message to the backend API at POST /api/analyze.
+ * It validates that a PRD baseline exists before dispatching,
+ * handles network/parse errors gracefully, and updates all
+ * relevant state from the structured JSON response.
  *
  * Grid columns:
  *   1. PRD Input Hub         — scope baseline entry
  *   2. Dev Chat Simulator    — mock developer communication feed
  *   3. Watchdog Alerts Feed  — real-time creep alert stream
  */
+
+const API_BASE = "http://localhost:3000";
 
 const SEED_MESSAGES = [
   {
@@ -53,12 +56,17 @@ export default function DashboardLayout() {
     setIsBaselineLocked(false);
   }, []);
 
-  // ── The Simulation Loop (Mock Backend) ───────────────────────
-  const simulateBackendAnalysis = useCallback((developerMessage) => {
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+  // ── Production API Call ──────────────────────────────────────
+  const simulateBackendAnalysis = useCallback(async (developerMessage) => {
+    // ── Guard: require PRD baseline before analysis ────────────
+    if (!prdText.trim()) {
+      alert("Please establish a PRD Baseline first!");
+      return;
+    }
 
-    // 1. Append the developer message to chat logs
+    const timeStr = new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+
+    // 1. Append the developer message to chat logs immediately
     const devMsg = {
       id: `msg_${Date.now()}`,
       author: "developer",
@@ -67,49 +75,76 @@ export default function DashboardLayout() {
     };
     setChatLogs((prev) => [...prev, devMsg]);
 
-    // 2. Show watchdog "processing" acknowledgement after 400ms
+    // 2. Show watchdog "processing" acknowledgement
     setIsAnalyzing(true);
-    setTimeout(() => {
-      const ackMsg = {
-        id: `ack_${Date.now()}`,
-        author: "watchdog",
-        text: "Message ingested. Running delta-evaluation against PRD baseline…",
-        time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
-      };
-      setChatLogs((prev) => [...prev, ackMsg]);
-    }, 400);
+    const ackMsg = {
+      id: `ack_${Date.now()}`,
+      author: "watchdog",
+      text: "Message ingested. Running delta-evaluation against PRD baseline…",
+      time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+    };
+    setChatLogs((prev) => [...prev, ackMsg]);
 
-    // 3. After 1500ms — simulate LLM response, generate a dynamic alert
-    setTimeout(() => {
-      const alertTimestamp = new Date().toISOString();
-      const dynamicAlert = {
-        id: `alert_${Date.now()}`,
-        timestamp: alertTimestamp,
-        severity: "HIGH",
-        source_channel: "sim:live-input",
-        flagged_text: developerMessage,
-        violation_explanation:
-          isBaselineLocked && prdText.trim()
-            ? `The active PRD baseline does not authorize this work. Flagged developer action falls outside the locked scope: "${prdText.slice(0, 100)}…"`
-            : "No PRD baseline has been established. All developer actions are flagged as potentially unauthorized scope expansion by default.",
+    // 3. Call the backend API
+    try {
+      const response = await fetch(`${API_BASE}/api/analyze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prdContext: prdText,
+          chatInput: developerMessage,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Backend returned ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // 4. Build the alert from the backend response
+      const backendAlert = {
+        id: data.alert_id || `alert_${Date.now()}`,
+        timestamp: data.timestamp || new Date().toISOString(),
+        severity: data.severity || "HIGH",
+        source_channel: data.source_channel || "api:live-analysis",
+        flagged_text: data.flagged_action || developerMessage,
+        violation_explanation: data.prd_violation || "The backend flagged this action as unauthorized scope expansion.",
       };
 
       // Unshift to top of feed so newest alert appears first
-      setAlerts((prev) => [dynamicAlert, ...prev]);
-      setIsAnalyzing(false);
+      setAlerts((prev) => [backendAlert, ...prev]);
 
-      // Watchdog confirmation in chat
+      // 5. Watchdog confirmation in chat
+      const severityLabel = backendAlert.severity;
       const resultMsg = {
         id: `result_${Date.now()}`,
         author: "watchdog",
-        text: `⚠ SCOPE CREEP DETECTED — Severity: HIGH. Alert generated and pushed to the PM feed.`,
+        text: data.is_scope_creep
+          ? `⚠ SCOPE CREEP DETECTED — Severity: ${severityLabel}. ${data.recommendation || "Alert generated and pushed to the PM feed."}`
+          : `✓ CLEAR — No scope deviation detected. The developer action appears to be within the approved PRD baseline.`,
         time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
       };
       setChatLogs((prev) => [...prev, resultMsg]);
 
-      console.log("[DashboardLayout] Dynamic alert generated:", dynamicAlert.id);
-    }, 1500);
-  }, [prdText, isBaselineLocked]);
+      console.log("[DashboardLayout] Backend analysis complete:", backendAlert.id);
+
+    } catch (error) {
+      // ── Graceful error handling ──────────────────────────────
+      console.error("[DashboardLayout] API error:", error.message);
+
+      const errorMsg = {
+        id: `err_${Date.now()}`,
+        author: "system",
+        text: `⚠ Connection failed: ${error.message}. The backend server at ${API_BASE} may not be running. Please start the backend or check your network.`,
+        time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+      };
+      setChatLogs((prev) => [...prev, errorMsg]);
+
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }, [prdText]);
 
   // ── Alert Action Handlers ────────────────────────────────────
   const handleDismissAlert = useCallback((alertId, severity) => {

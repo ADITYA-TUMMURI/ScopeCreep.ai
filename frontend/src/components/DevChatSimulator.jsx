@@ -140,7 +140,7 @@ export default function DevChatSimulator({
                     {msg.time}
                   </span>
                 </div>
-                <p className="text-[13px] text-slate-400 leading-relaxed break-words">
+                <p className="text-[13px] text-slate-400 leading-relaxed break-words whitespace-pre-wrap">
                   {msg.text}
                 </p>
               </div>
