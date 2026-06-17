@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import mockAlerts from "../data/mockAlerts.json";
 import PrdInputHub from "./PrdInputHub";
 import DevChatSimulator from "./DevChatSimulator";
@@ -37,6 +37,9 @@ const SEED_MESSAGES = [
 ];
 
 export default function DashboardLayout() {
+  // ── Pendo Agent Tracking ──────────────────────────────────────
+  const conversationId = useRef(crypto.randomUUID());
+
   // ── Lifted State ─────────────────────────────────────────────
   const [prdText, setPrdText] = useState("");
   const [isBaselineLocked, setIsBaselineLocked] = useState(false);
@@ -74,6 +77,16 @@ export default function DashboardLayout() {
       time: timeStr,
     };
     setChatLogs((prev) => [...prev, devMsg]);
+
+    // Track user prompt with Pendo
+    if (window.pendo && window.pendo.trackAgent) {
+      window.pendo.trackAgent("prompt", {
+        agentId: "CqPhJuhssAZT4VV7gAbJ9_DlUpU",
+        conversationId: conversationId.current,
+        messageId: devMsg.id,
+        content: developerMessage,
+      });
+    }
 
     // 2. Show watchdog "processing" acknowledgement
     setIsAnalyzing(true);
@@ -127,6 +140,16 @@ export default function DashboardLayout() {
       };
       setChatLogs((prev) => [...prev, resultMsg]);
 
+      // Track agent response with Pendo
+      if (window.pendo && window.pendo.trackAgent) {
+        window.pendo.trackAgent("agent_response", {
+          agentId: "CqPhJuhssAZT4VV7gAbJ9_DlUpU",
+          conversationId: conversationId.current,
+          messageId: backendAlert.id,
+          content: resultMsg.text,
+        });
+      }
+
       console.log("[DashboardLayout] Backend analysis complete:", backendAlert.id);
 
     } catch (error) {
@@ -148,15 +171,29 @@ export default function DashboardLayout() {
 
   // ── Alert Action Handlers ────────────────────────────────────
   const handleDismissAlert = useCallback((alertId, severity) => {
-    // ROLE 4: INJECT NOVUS.AI TELEMETRY TRACKING HERE
-    // e.g., novus.track('Alert Dismissed', { severity })
+    // Track negative user reaction with Pendo
+    if (window.pendo && window.pendo.trackAgent) {
+      window.pendo.trackAgent("user_reaction", {
+        agentId: "CqPhJuhssAZT4VV7gAbJ9_DlUpU",
+        conversationId: conversationId.current,
+        messageId: alertId,
+        content: "negative",
+      });
+    }
     setAlerts((prev) => prev.filter((a) => a.id !== alertId));
     console.log("[DashboardLayout] Alert dismissed:", alertId, "severity:", severity);
   }, []);
 
   const handleEscalateAlert = useCallback((alertId, severity) => {
-    // ROLE 4: INJECT NOVUS.AI TELEMETRY TRACKING HERE
-    // e.g., novus.track('Alert Escalated', { duration_ms: timeDiff })
+    // Track positive user reaction with Pendo
+    if (window.pendo && window.pendo.trackAgent) {
+      window.pendo.trackAgent("user_reaction", {
+        agentId: "CqPhJuhssAZT4VV7gAbJ9_DlUpU",
+        conversationId: conversationId.current,
+        messageId: alertId,
+        content: "positive",
+      });
+    }
     console.log("[DashboardLayout] Alert escalated to Slack:", alertId, "severity:", severity);
   }, []);
 
