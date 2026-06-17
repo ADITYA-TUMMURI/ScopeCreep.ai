@@ -48,13 +48,29 @@ export default function DashboardLayout() {
   const handleLockBaseline = useCallback(() => {
     if (!prdText.trim()) return;
     setIsBaselineLocked(true);
+
+    if (typeof pendo !== "undefined") {
+      pendo.track("PRD Baseline Established", {
+        charCount: prdText.length,
+        wordCount: prdText.trim().split(/\s+/).length,
+      });
+    }
+
     console.log("[DashboardLayout] PRD baseline locked:", prdText.slice(0, 80) + "…");
   }, [prdText]);
 
   const handleClearBaseline = useCallback(() => {
+    if (typeof pendo !== "undefined") {
+      pendo.track("PRD Baseline Cleared", {
+        previousCharCount: prdText.length,
+        previousWordCount: prdText.trim() ? prdText.trim().split(/\s+/).length : 0,
+        hadLockedBaseline: isBaselineLocked,
+      });
+    }
+
     setPrdText("");
     setIsBaselineLocked(false);
-  }, []);
+  }, [prdText, isBaselineLocked]);
 
   // ── Production API Call ──────────────────────────────────────
   const simulateBackendAnalysis = useCallback(async (developerMessage) => {
@@ -115,6 +131,17 @@ export default function DashboardLayout() {
       // Unshift to top of feed so newest alert appears first
       setAlerts((prev) => [backendAlert, ...prev]);
 
+      if (typeof pendo !== "undefined") {
+        pendo.track("Scope Analysis Completed", {
+          is_scope_creep: Boolean(data.is_scope_creep),
+          severity: backendAlert.severity,
+          alert_id: backendAlert.id,
+          prdContextLength: prdText.length,
+          chatInputLength: developerMessage.length,
+          source_channel: backendAlert.source_channel,
+        });
+      }
+
       // 5. Watchdog confirmation in chat
       const severityLabel = backendAlert.severity;
       const resultMsg = {
@@ -133,6 +160,14 @@ export default function DashboardLayout() {
       // ── Graceful error handling ──────────────────────────────
       console.error("[DashboardLayout] API error:", error.message);
 
+      if (typeof pendo !== "undefined") {
+        pendo.track("Scope Analysis Failed", {
+          error_message: (error.message || "").slice(0, 200),
+          prdContextLength: prdText.length,
+          chatInputLength: developerMessage.length,
+        });
+      }
+
       const errorMsg = {
         id: `err_${Date.now()}`,
         author: "system",
@@ -148,17 +183,41 @@ export default function DashboardLayout() {
 
   // ── Alert Action Handlers ────────────────────────────────────
   const handleDismissAlert = useCallback((alertId, severity) => {
-    // ROLE 4: INJECT NOVUS.AI TELEMETRY TRACKING HERE
-    // e.g., novus.track('Alert Dismissed', { severity })
+    const alert = alerts.find((a) => a.id === alertId);
+
+    if (typeof pendo !== "undefined") {
+      pendo.track("Alert Dismissed", {
+        alertId,
+        severity,
+        source_channel: alert?.source_channel,
+        flagged_text: (alert?.flagged_text || "").slice(0, 100),
+        alert_age_ms: alert?.timestamp
+          ? Date.now() - new Date(alert.timestamp).getTime()
+          : undefined,
+      });
+    }
+
     setAlerts((prev) => prev.filter((a) => a.id !== alertId));
     console.log("[DashboardLayout] Alert dismissed:", alertId, "severity:", severity);
-  }, []);
+  }, [alerts]);
 
   const handleEscalateAlert = useCallback((alertId, severity) => {
-    // ROLE 4: INJECT NOVUS.AI TELEMETRY TRACKING HERE
-    // e.g., novus.track('Alert Escalated', { duration_ms: timeDiff })
+    const alert = alerts.find((a) => a.id === alertId);
+
+    if (typeof pendo !== "undefined") {
+      pendo.track("Alert Escalated", {
+        alertId,
+        severity,
+        source_channel: alert?.source_channel,
+        flagged_text: (alert?.flagged_text || "").slice(0, 100),
+        duration_ms: alert?.timestamp
+          ? Date.now() - new Date(alert.timestamp).getTime()
+          : undefined,
+      });
+    }
+
     console.log("[DashboardLayout] Alert escalated to Slack:", alertId, "severity:", severity);
-  }, []);
+  }, [alerts]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 lg:p-6 h-[calc(100vh-65px)] overflow-hidden">
