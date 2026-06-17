@@ -1,0 +1,26 @@
+[
+  {
+    "id": "alert_20260617_001",
+    "timestamp": "2026-06-17T09:14:32Z",
+    "severity": "HIGH",
+    "source_channel": "slack:#frontend-dev",
+    "flagged_text": "While I'm fixing the login validation bug, I'm going to add OAuth2 support for Google and GitHub — makes more sense to do it now while I'm in the auth module.",
+    "violation_explanation": "The approved PRD for Sprint 14 scopes the auth module work strictly to fixing the email/password validation edge case (JIRA-1042). Adding OAuth2 provider integrations is a net-new feature that requires product approval, security review, and dedicated QA allocation."
+  },
+  {
+    "id": "alert_20260617_002",
+    "timestamp": "2026-06-17T10:27:05Z",
+    "severity": "MEDIUM",
+    "source_channel": "github:commit/a3f8c91",
+    "flagged_text": "refactor(settings): migrate user preferences to new tabbed layout with collapsible sections and keyboard navigation",
+    "violation_explanation": "The sprint objective is a copy change on the settings page header (JIRA-1088). Migrating the entire preferences panel to a tabbed layout with accessibility enhancements constitutes a UX overhaul outside the defined scope."
+  },
+  {
+    "id": "alert_20260617_003",
+    "timestamp": "2026-06-17T11:03:48Z",
+    "severity": "LOW",
+    "source_channel": "slack:#backend-eng",
+    "flagged_text": "I added a retry wrapper with exponential backoff around the payment webhook handler — felt like the right time since I was already debugging the timeout issue.",
+    "violation_explanation": "The sprint task covers investigating and logging the webhook timeout (JIRA-1101). Adding a retry mechanism with backoff is a reliability enhancement that, while beneficial, was not scoped or estimated in the current sprint."
+  }
+]
