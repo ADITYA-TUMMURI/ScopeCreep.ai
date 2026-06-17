@@ -1,27 +1,24 @@
 import { useState, useRef, useEffect } from "react";
-import { Terminal, ArrowUp, User, Bot } from "lucide-react";
+import { Terminal, ArrowUp, User, Bot, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ActionButton from "./ActionButton";
 
 /**
- * DevChatSimulator — Developer terminal / chat log simulator.
+ * DevChatSimulator — Developer terminal / chat log simulator (prop-driven).
  *
- * Simulates a live developer communication channel. The judge or PM
- * types mock developer messages, clicks "Simulate Code Push," and
- * the message appears in the scrollable chat history pane.
+ * Receives from DashboardLayout:
+ *   • chatLogs                     — array of message objects to render
+ *   • onSimulateCodePush(message)  — triggers the simulation loop in the parent
+ *   • isAnalyzing                  — loading state while "LLM" is processing
+ *
+ * The input text and send logic remain local — only the actual
+ * simulation trigger is delegated upward.
  */
-
-const SEED_MESSAGES = [
-  {
-    id: "seed_1",
-    author: "system",
-    text: "Watchdog channel initialized. Paste developer messages below and click 'Simulate Code Push' to test scope detection.",
-    time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
-  },
-];
-
-export default function DevChatSimulator() {
-  const [messages, setMessages] = useState(SEED_MESSAGES);
+export default function DevChatSimulator({
+  chatLogs,
+  onSimulateCodePush,
+  isAnalyzing,
+}) {
   const [input, setInput] = useState("");
   const scrollRef = useRef(null);
 
@@ -30,35 +27,15 @@ export default function DevChatSimulator() {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [chatLogs]);
 
   const handleSend = () => {
     const trimmed = input.trim();
     if (!trimmed) return;
 
-    const devMessage = {
-      id: `msg_${Date.now()}`,
-      author: "developer",
-      text: trimmed,
-      time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
-    };
-
-    // Simulate a system acknowledgement after a short delay
-    const ackMessage = {
-      id: `ack_${Date.now()}`,
-      author: "watchdog",
-      text: "Message ingested. Running delta-evaluation against PRD baseline…",
-      time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
-    };
-
-    setMessages((prev) => [...prev, devMessage]);
+    // Delegate to parent simulation loop
+    onSimulateCodePush(trimmed);
     setInput("");
-
-    setTimeout(() => {
-      setMessages((prev) => [...prev, ackMessage]);
-    }, 600);
-
-    console.log("[DevChatSimulator] Code push simulated:", trimmed.slice(0, 80));
   };
 
   const handleKeyDown = (e) => {
@@ -91,9 +68,17 @@ export default function DevChatSimulator() {
           </div>
         </div>
 
-        <span className="text-[11px] tabular-nums text-slate-600">
-          {messages.length - 1} messages
-        </span>
+        <div className="flex items-center gap-2">
+          {isAnalyzing && (
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-amber-500 bg-amber-950/30 border border-amber-800/40 rounded-full">
+              <Loader2 size={10} className="animate-spin" />
+              Analyzing
+            </span>
+          )}
+          <span className="text-[11px] tabular-nums text-slate-600">
+            {chatLogs.length - 1} messages
+          </span>
+        </div>
       </div>
 
       {/* ── Scrollable Message History ────────────────────────── */}
@@ -102,7 +87,7 @@ export default function DevChatSimulator() {
         className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin"
       >
         <AnimatePresence>
-          {messages.map((msg) => (
+          {chatLogs.map((msg) => (
             <motion.div
               key={msg.id}
               initial={{ opacity: 0, y: 8 }}
@@ -171,6 +156,7 @@ export default function DevChatSimulator() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           rows={1}
+          disabled={isAnalyzing}
           placeholder="Type a mock developer message or commit log…"
           className="
             flex-1 resize-none
@@ -180,13 +166,14 @@ export default function DevChatSimulator() {
             outline-none
             focus:border-slate-600
             transition-colors duration-200
+            disabled:opacity-50 disabled:cursor-not-allowed
           "
         />
         <ActionButton
           variant="primary"
           icon={ArrowUp}
           onClick={handleSend}
-          disabled={!input.trim()}
+          disabled={!input.trim() || isAnalyzing}
           className="!px-3 !py-2 shrink-0"
         >
           Simulate Code Push

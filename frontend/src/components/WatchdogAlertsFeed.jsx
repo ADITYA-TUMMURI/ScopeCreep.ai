@@ -1,27 +1,29 @@
-import { useState } from "react";
 import { ShieldAlert, X, Send, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import StatusBadge from "./StatusBadge";
 import ActionButton from "./ActionButton";
-import mockAlerts from "../data/mockAlerts.json";
 
 /**
- * WatchdogAlertsFeed — Live scope creep alert feed.
+ * WatchdogAlertsFeed — Live scope creep alert feed (prop-driven).
  *
- * Renders alert cards from mockAlerts.json, with conditional
- * HIGH-severity styling (rose border glow + tinted background).
- * Each card exposes Dismiss and Escalate action buttons.
+ * Receives from DashboardLayout:
+ *   • alerts                          — array of alert objects to render
+ *   • onDismiss(alertId, severity)    — dismiss handler (removes from feed)
+ *   • onEscalate(alertId, severity)   — escalate handler (triggers Slack notification)
+ *
+ * Telemetry anchors are marked with ROLE 4 comments on the action handlers.
  */
-export default function WatchdogAlertsFeed() {
-  const [alerts, setAlerts] = useState(mockAlerts);
-
-  const handleDismiss = (alertId) => {
-    setAlerts((prev) => prev.filter((a) => a.id !== alertId));
-    console.log("[WatchdogAlertsFeed] Alert dismissed:", alertId);
+export default function WatchdogAlertsFeed({ alerts, onDismiss, onEscalate }) {
+  const handleDismiss = (alertId, severity) => {
+    // ROLE 4: INJECT NOVUS.AI TELEMETRY TRACKING HERE
+    // e.g., novus.track('Alert Dismissed', { severity })
+    onDismiss(alertId, severity);
   };
 
-  const handleEscalate = (alertId) => {
-    console.log("[WatchdogAlertsFeed] Alert escalated to Slack:", alertId);
+  const handleEscalate = (alertId, severity) => {
+    // ROLE 4: INJECT NOVUS.AI TELEMETRY TRACKING HERE
+    // e.g., novus.track('Alert Escalated', { duration_ms: timeDiff })
+    onEscalate(alertId, severity);
   };
 
   return (
@@ -122,7 +124,7 @@ export default function WatchdogAlertsFeed() {
                   <ActionButton
                     variant="secondary"
                     icon={X}
-                    onClick={() => handleDismiss(alert.id)}
+                    onClick={() => handleDismiss(alert.id, alert.severity)}
                     className="!px-2.5 !py-1 !text-[11px]"
                   >
                     Dismiss
@@ -130,7 +132,7 @@ export default function WatchdogAlertsFeed() {
                   <ActionButton
                     variant="danger"
                     icon={Send}
-                    onClick={() => handleEscalate(alert.id)}
+                    onClick={() => handleEscalate(alert.id, alert.severity)}
                     className="!px-2.5 !py-1 !text-[11px]"
                   >
                     Escalate

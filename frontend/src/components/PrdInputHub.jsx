@@ -1,30 +1,24 @@
-import { useState } from "react";
 import { FileText, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import ActionButton from "./ActionButton";
 
 /**
- * PrdInputHub — PRD Baseline Context panel.
+ * PrdInputHub — PRD Baseline Context panel (prop-driven).
  *
- * Allows the PM to paste or type a Product Requirement Document
- * that becomes the immutable scope baseline for the watchdog engine.
+ * All state is owned by DashboardLayout. This component receives:
+ *   • prdText / setPrdText   — controlled textarea value
+ *   • isLocked               — whether the baseline has been established
+ *   • onLockBaseline()       — called when PM clicks "Establish Scope Baseline"
+ *   • onClear()              — called when PM clicks "Clear"
  */
-export default function PrdInputHub() {
-  const [prdText, setPrdText] = useState("");
-  const [isLocked, setIsLocked] = useState(false);
-
+export default function PrdInputHub({
+  prdText,
+  setPrdText,
+  isLocked,
+  onLockBaseline,
+  onClear,
+}) {
   const charCount = prdText.length;
-
-  const handleEstablishBaseline = () => {
-    if (!prdText.trim()) return;
-    setIsLocked(true);
-    console.log("[PrdInputHub] Baseline established:", prdText.slice(0, 80) + "…");
-  };
-
-  const handleClear = () => {
-    setPrdText("");
-    setIsLocked(false);
-  };
 
   return (
     <motion.div
@@ -85,7 +79,7 @@ export default function PrdInputHub() {
             <ActionButton
               variant="secondary"
               icon={Trash2}
-              onClick={handleClear}
+              onClick={onClear}
               className="!px-3 !py-1.5 !text-xs"
             >
               Clear
@@ -94,7 +88,7 @@ export default function PrdInputHub() {
           <ActionButton
             variant="primary"
             icon={FileText}
-            onClick={handleEstablishBaseline}
+            onClick={onLockBaseline}
             disabled={!prdText.trim() || isLocked}
             className="!px-3 !py-1.5 !text-xs"
           >
