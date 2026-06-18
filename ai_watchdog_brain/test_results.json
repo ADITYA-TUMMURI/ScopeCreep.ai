@@ -1,0 +1,391 @@
+{
+  "timestamp": "2026-06-18T13:18:23.769476",
+  "mode": "simulation",
+  "summary": {
+    "total": 20,
+    "valid_format_count": 20,
+    "accurate_count": 20
+  },
+  "detailed_results": [
+    {
+      "id": "safe_001",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_001",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "safe_002",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_002",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "safe_003",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_003",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "safe_004",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_004",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "safe_005",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_005",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "safe_006",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_006",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "safe_007",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_007",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "safe_008",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_008",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "safe_009",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_009",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "safe_010",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_010",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_001",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "HIGH"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_001",
+        "is_scope_creep": true,
+        "severity": "HIGH",
+        "flagged_action": "Flagged action for creep_001",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Fix authentication validation bug...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_002",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "MEDIUM"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_002",
+        "is_scope_creep": true,
+        "severity": "MEDIUM",
+        "flagged_action": "Flagged action for creep_002",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Correct the landing page header c...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_003",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "LOW"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_003",
+        "is_scope_creep": true,
+        "severity": "LOW",
+        "flagged_action": "Flagged action for creep_003",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Investigate and log backend API t...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_004",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "MEDIUM"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_004",
+        "is_scope_creep": true,
+        "severity": "MEDIUM",
+        "flagged_action": "Flagged action for creep_004",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Adjust footer margin and center l...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_005",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "HIGH"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_005",
+        "is_scope_creep": true,
+        "severity": "HIGH",
+        "flagged_action": "Flagged action for creep_005",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Update contact form page to inclu...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_006",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "MEDIUM"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_006",
+        "is_scope_creep": true,
+        "severity": "MEDIUM",
+        "flagged_action": "Flagged action for creep_006",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Add transaction list table view. ...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_007",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "HIGH"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_007",
+        "is_scope_creep": true,
+        "severity": "HIGH",
+        "flagged_action": "Flagged action for creep_007",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Add Stripe checkout button on the...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_008",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "MEDIUM"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_008",
+        "is_scope_creep": true,
+        "severity": "MEDIUM",
+        "flagged_action": "Flagged action for creep_008",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Implement contact form submission...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_009",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "LOW"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_009",
+        "is_scope_creep": true,
+        "severity": "LOW",
+        "flagged_action": "Flagged action for creep_009",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Center the logo image and adjust ...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "creep_010",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "HIGH"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_010",
+        "is_scope_creep": true,
+        "severity": "HIGH",
+        "flagged_action": "Flagged action for creep_010",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Address high-severity security vu...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    }
+  ]
+}

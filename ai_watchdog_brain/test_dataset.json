@@ -1,0 +1,222 @@
+[
+  {
+    "id": "safe_001",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Fix authentication validation bugs. Focus strictly on email validation edge cases.",
+    "chatInput": "Hey, I noticed the regex in auth.js was rejecting '.co.uk' and '.info' email addresses. I fixed it and added unit tests for these domains.",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "Fixing a bug with email domains is exactly aligned with fixing email validation edge cases. Adding unit tests for the fix is standard best practice, not scope creep."
+  },
+  {
+    "id": "safe_002",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Add transaction list view. Display date, amount, and status on a simple table layout.",
+    "chatInput": "Cleaned up DashboardLayout.jsx by extracting the date formatter into a helper function in utils.js to make the table code more readable.",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "Code refactoring/cleanup to make the mandated dashboard table code readable is standard practice and does not add new features."
+  },
+  {
+    "id": "safe_003",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Update contact form page to include validation for phone number fields.",
+    "chatInput": "Added Jest unit tests for the phone number validation regex in contactForm.js to cover empty, short, and formatted strings.",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "Writing tests for the specified feature is standard development workflow and within scope."
+  },
+  {
+    "id": "safe_004",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Correct the landing page header copy to read 'AI-powered sprint watchdog'.",
+    "chatInput": "docs(landing): fix typos and update landing page heading to 'AI-powered sprint watchdog' as requested in JIRA-823",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "Updating copy exactly as requested is within scope."
+  },
+  {
+    "id": "safe_005",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Integrate Stripe checkout button on the premium subscription page.",
+    "chatInput": "Hey PM, does the Stripe checkout button need to be disabled when the payment form is in a loading state? Just wanted to clarify.",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "Asking clarifying questions about the UI behavior of a scoped feature is not scope creep."
+  },
+  {
+    "id": "safe_006",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Investigate and log backend API timeout issues on the webhook endpoint.",
+    "chatInput": "I added detailed console.error logs and winston logging middleware to output stack traces when API timeout errors are caught on the webhook.",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "Adding diagnostics and logging to investigate timeouts is within the scope of the investigation task."
+  },
+  {
+    "id": "safe_007",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Center the logo image and adjust footer margin to 24px on the landing page.",
+    "chatInput": "style: adjust logo centering via flexbox and set footer margin-top to 24px to match design spec",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "CSS styling adjustments to match the design spec are within scope."
+  },
+  {
+    "id": "safe_008",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Address high-severity security vulnerabilities reported in dependency scan.",
+    "chatInput": "Upgraded axios from 1.6.0 to 1.6.8 to patch the server-side request forgery vulnerability (CVE-2023-45857).",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "Upgrading dependencies to patch security vulnerabilities is part of addressing reported vulnerabilities."
+  },
+  {
+    "id": "safe_009",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Implement contact form submission handler.",
+    "chatInput": "Added try-catch error handling to block submit requests if network is down, and show a 'Network error, please try again' toast.",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "Error handling and basic user feedback on submission failures are standard robust implementation requirements, not scope creep."
+  },
+  {
+    "id": "safe_010",
+    "type": "safe",
+    "prdContext": "Sprint 14 scope: Add technical documentation on building local Docker image.",
+    "chatInput": "docs: updated README.md with detailed Docker build commands and environment variable options.",
+    "expected": {
+      "is_scope_creep": false,
+      "severity": "NONE"
+    },
+    "description": "Adding technical documentation as requested is within scope."
+  },
+  {
+    "id": "creep_001",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Fix authentication validation bugs. Focus strictly on email validation edge cases.",
+    "chatInput": "While I'm fixing the login validation bug, I'm going to add OAuth2 support for Google and GitHub — makes more sense to do it now while I'm in the auth module.",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "HIGH"
+    },
+    "description": "Adding third-party authentication (OAuth2) is a major new feature requiring separate product approval, testing, and security checks."
+  },
+  {
+    "id": "creep_002",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Correct the landing page header copy to read 'AI-powered sprint watchdog'.",
+    "chatInput": "refactor(settings): migrate user preferences to new tabbed layout with collapsible sections and keyboard navigation",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "MEDIUM"
+    },
+    "description": "Migrating a settings preference panel to a completely new tabbed structure is a UX/layout overhaul completely unrelated to landing page header copy changes."
+  },
+  {
+    "id": "creep_003",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Investigate and log backend API timeout issues on the webhook endpoint.",
+    "chatInput": "I added a retry wrapper with exponential backoff around the payment webhook handler — felt like the right time since I was already debugging the timeout issue.",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "LOW"
+    },
+    "description": "Adding a retry wrapper with exponential backoff is a reliability enhancement that goes beyond investigating and logging. It could cause duplicated webhook processing bugs if not properly handled."
+  },
+  {
+    "id": "creep_004",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Adjust footer margin and center logo image on the landing page.",
+    "chatInput": "I'm going to quickly implement a custom dark-mode toggle switch in the navbar while working on the footer CSS alignment.",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "MEDIUM"
+    },
+    "description": "Implementing dark-mode is a net-new UI feature that affects the entire application design and color scheme, not a footer margin adjustment."
+  },
+  {
+    "id": "creep_005",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Update contact form page to include validation for phone number fields.",
+    "chatInput": "Integrating Mixpanel SDK to track user submission events on the contact page so we can monitor interaction funnels.",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "HIGH"
+    },
+    "description": "Integrating third-party analytics services (Mixpanel) involves third-party tracking, security/privacy considerations, and is a major addition not scoped under form validation."
+  },
+  {
+    "id": "creep_006",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Add transaction list table view. Display date, amount, and status on screen.",
+    "chatInput": "I added 'Export to CSV' and 'Export to PDF' buttons on the transaction page since it was pretty easy using a canvas library.",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "MEDIUM"
+    },
+    "description": "Exporting data to PDF/CSV is a separate utility feature requiring extra libraries, UI hooks, and testing, which goes beyond displaying a simple table."
+  },
+  {
+    "id": "creep_007",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Add Stripe checkout button on the premium subscription page.",
+    "chatInput": "I set up a multi-language i18n localization engine and translated the checkout page to French and Spanish since we might expand globally.",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "HIGH"
+    },
+    "description": "Setting up multi-language frameworks (i18n) and translating content is an architectural and content expansion unrelated to Stripe buttons."
+  },
+  {
+    "id": "creep_008",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Implement contact form submission handler.",
+    "chatInput": "Added a Redis caching layer for submitted contact messages to speed up queries, even though we write them straight to PostgreSQL.",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "MEDIUM"
+    },
+    "description": "Adding a caching layer (Redis) introduces infrastructure complexity, synchronization logic, and operational overhead not required by a simple submit form."
+  },
+  {
+    "id": "creep_009",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Center the logo image and adjust footer margin to 24px on the landing page.",
+    "chatInput": "I built a cool synthesized sound effects player using the Web Audio API that triggers funny sounds when clicking buttons.",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "LOW"
+    },
+    "description": "Adding Web Audio effects triggers is low-severity scope creep. It changes user experience and introduces custom browser audio behaviors."
+  },
+  {
+    "id": "creep_010",
+    "type": "creep",
+    "prdContext": "Sprint 14 scope: Address high-severity security vulnerabilities reported in dependency scan.",
+    "chatInput": "While updating libraries, I also added a Gemini LLM-powered autofill description feature on the settings profile page so users can auto-generate bio texts.",
+    "expected": {
+      "is_scope_creep": true,
+      "severity": "HIGH"
+    },
+    "description": "Adding an AI-powered bio generation feature is a massive feature addition requiring API keys, prompt tuning, and product validation, completely out of security patching scope."
+  }
+]
