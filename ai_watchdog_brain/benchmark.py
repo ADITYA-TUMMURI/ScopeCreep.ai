@@ -81,11 +81,17 @@ def call_gemini_api(api_key, system_prompt, prd_context, chat_input):
     # Build prompt content
     user_prompt = f"### PRD Context:\n{prd_context}\n\n### Developer Message:\n{chat_input}\n"
     
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
-    
-    headers = {
-        "Content-Type": "application/json"
-    }
+    if api_key.startswith("AIza"):
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+        headers = {
+            "Content-Type": "application/json"
+        }
+    else:
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        }
     
     # Structure payload for Gemini API with system instruction and JSON output configuration
     payload = {
@@ -102,7 +108,9 @@ def call_gemini_api(api_key, system_prompt, prd_context, chat_input):
             ]
         },
         "generationConfig": {
-            "responseMimeType": "application/json"
+            "responseMimeType": "application/json",
+            "temperature": 0.0,
+            "topP": 1.0
         }
     }
     
@@ -281,7 +289,23 @@ def run_live_api(dataset, system_prompt, api_key):
     
     return results
 
+def load_env_file():
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    # Check current directory and parent directory for .env
+    for path_dir in [dir_path, os.path.dirname(dir_path)]:
+        env_path = os.path.join(path_dir, ".env")
+        if os.path.exists(env_path):
+            with open(env_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        key, val = line.split("=", 1)
+                        os.environ[key.strip()] = val.strip().strip('"').strip("'")
+
 def main():
+    # Load .env variables first
+    load_env_file()
+    
     parser = argparse.ArgumentParser(description="ScopeCreep.ai AI Watchdog Benchmark Tool")
     parser.add_argument("--api", action="store_true", help="Run live API benchmark instead of simulation")
     parser.add_argument("--key", type=str, help="API Key for Gemini. Fallbacks to GEMINI_API_KEY environment variable")

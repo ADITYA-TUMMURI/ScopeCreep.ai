@@ -31,3 +31,13 @@ export GEMINI_API_KEY="your_api_key_here"
 python3 benchmark.py --api
 ```
 *(Alternatively, pass the key via parameter: `python3 benchmark.py --api --key <YOUR_API_KEY>`)*
+
+---
+
+## 📏 Token Budget & Context Guidelines
+
+To ensure the AI Watchdog remains performant, fast, and does not truncate data, the following token constraints must be enforced when passing text from the UI to the API:
+
+* **PRD Baseline Window (`prdContext`)**: Maximum **8,000 tokens** (approx. 6,000 words). If the PRD is longer, it should be summarized by the PM before locking the baseline.
+* **Developer Chat Input (`chatInput`)**: Maximum **1,000 tokens** (approx. 750 words). Extremely long chat logs or massive Git diffs should be truncated to the most recent changes before submission.
+* **Max Output Tokens**: The system is locked to `responseMimeType: "application/json"`. The JSON response payload will consistently consume fewer than **250 tokens**.
