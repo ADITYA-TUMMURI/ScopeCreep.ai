@@ -19,9 +19,9 @@ This role handles server creation, routing framework setup, and external API pip
 
     Exact Task Checklist:
 
-        [ ] Initialize a clean Node.js (Express) or Python (FastAPI/Flask) application workspace.
+        [x] Initialize a clean Node.js (Express) or Python (FastAPI/Flask) application workspace.
 
-        [ ] Build out three explicit HTTP routes:
+        [x] Build out three explicit HTTP routes:
 
             POST /api/prd - To store active PRD contexts in memory.
 
@@ -29,9 +29,9 @@ This role handles server creation, routing framework setup, and external API pip
 
             GET /api/alerts - To serve the list of processed system alerts back to the frontend dashboard.
 
-        [ ] Wire up the external LLM provider connection (OpenAI SDK, Anthropic SDK, etc.) within the simulation route.
+        [x] Wire up the external LLM provider connection (OpenAI SDK, Anthropic SDK, etc.) within the simulation route.
 
-        [ ] Create a toggle switch in the code: Route text through a hardcoded mock JSON block initially, and flip to the live LLM API call once the Prompt Engineer signs off on the prompt string.
+        [x] Create a toggle switch in the code: Route text through a hardcoded mock JSON block initially, and flip to the live LLM API call once the Prompt Engineer signs off on the prompt string.
 
 3. The Frontend & UX Engineer ("The Face")
 
