@@ -5,13 +5,13 @@ This role owns the foundational intelligence and analytical accuracy of the appl
 
     Exact Task Checklist:
 
-        [ ] Design, iterate, and optimize the system instructions prompt that commands an LLM to act as a strict product watchdog comparing a [PRD] to a [Chat/Commit Message].
+        [x] Design, iterate, and optimize the system instructions prompt that commands an LLM to act as a strict product watchdog comparing a [PRD] to a [Chat/Commit Message].
 
-        [ ] Implement strict Output Parsing constraints inside the prompt to guarantee the AI responds only in valid, parsable JSON matching the Day 1 Contract.
+        [x] Implement strict Output Parsing constraints inside the prompt to guarantee the AI responds only in valid, parsable JSON matching the Day 1 Contract.
 
-        [ ] Assemble a local testing dataset of 20 distinct developer conversation strings: 10 representing safe sprint questions (e.g., bug fixes, clarifications) and 10 representing clear, unauthorized scope creep.
+        [x] Assemble a local testing dataset of 20 distinct developer conversation strings: 10 representing safe sprint questions (e.g., bug fixes, clarifications) and 10 representing clear, unauthorized scope creep.
 
-        [ ] Run benchmarking tests against the prompt to ensure consistency and prevent structural formatting failures.
+        [x] Run benchmarking tests against the prompt to ensure consistency and prevent structural formatting failures.
 
 2. The Backend & Integration Developer ("The Engine")
 
