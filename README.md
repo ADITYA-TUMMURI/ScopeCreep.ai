@@ -4,134 +4,70 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](./LICENSE)
 [![Hackathon](https://img.shields.io/badge/Mind%20the%20Product-Everyone%20Ships%20Now-blueviolet?style=flat-square)](https://www.mindtheproduct.com/)
-[![Telemetry](https://img.shields.io/badge/Telemetry-Novus.ai-0099ff?style=flat-square)](https://novus.ai)
+[![Deployment](https://img.shields.io/badge/Production-Live-emerald?style=flat-square)](https://scopecreep-ai.vercel.app)
 
 ---
 
-## The Problem
-
-Developers routinely slip unauthorized work into active sprints — a dark-mode toggle during a layout fix, a UX overhaul during a copy change, an OAuth integration during a validation bugfix. None of it is malicious, but by the time the PM catches it at sprint review, testing debt has compounded and the launch target is blown.
-
-**ScopeCreep.ai automates the surveillance.** It ingests a Product Requirement Document, monitors developer communication in real time, and uses an LLM to flag any work that falls outside the approved scope — instantly.
+## 🚀 Live Deployments
+* **Frontend (Vercel)**: [https://scopecreep-ai.vercel.app](https://scopecreep-ai.vercel.app)
+* **Backend (Render)**: `https://scopecreep-ai.onrender.com`
 
 ---
 
-## How It Works
+## 🛠️ System Workflow
 
 ```
-PRD Baseline ──→ Passive Monitor ──→ AI Delta Engine ──→ Real-Time Alert
-     │                  │                    │                   │
- PM pastes the    Ingests dev chat     LLM compares chat    Dashboard lights
- approved scope   & commit messages    against PRD scope    up with severity-
- document         from Slack/GitHub    to detect drift      coded creep alerts
+[PRD Baseline Context] ──→ [Dev Chat / Commits] ──→ [AI Delta Engine] ──→ [Creep Alerts Feed]
+   (PM input baseline)        (Developer updates)       (Gemini evaluation)      (HIGH/MEDIUM/LOW pills)
 ```
 
-The PM then **Dismisses** (false positive) or **Escalates to Slack** (confirmed creep).
+1. **Lock Baseline**: The PM locks the approved PRD scope context.
+2. **Simulate Chat**: Developer communication or commit messages are ingested.
+3. **AI Delta-Evaluation**: The AI compared the inputs and flags any features outside the locked scope.
+4. **Escalate/Dismiss**: The PM reviews and either dismisses (false positive) or escalates (notifies Slack).
 
 ---
 
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| **Frontend** | React · Vite · Tailwind CSS v4 |
-| **Animations** | Framer Motion |
-| **Icons** | Lucide React |
-| **Backend** | Node.js (Express) / Python (FastAPI) |
-| **AI Engine** | OpenAI / Anthropic Claude SDK |
-| **Telemetry** | Novus.ai |
+## 💻 Tech Stack
+* **Frontend**: React 19 · Vite 8 · Tailwind CSS v4 · Framer Motion 12 · Lucide Icons
+* **Backend**: Node.js (Express) · `@google/genai` (Gemini API SDK)
+* **AI Model**: Gemini 3.5 Flash
+* **Telemetry**: Pendo Web SDK & Novus.ai Telemetry
 
 ---
 
-## Quick Start
+## ⚡ Quick Start (Local Setup)
 
+### 1. Prerequisites & Environment
+Create a `.env` file in the project root:
+```env
+PORT=3000
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### 2. Run the Backend
 ```bash
-# Clone
-git clone https://github.com/ADITYA-TUMMURI/ScopeCreep.ai.git
-cd ScopeCreep.ai
+cd backend
+pnpm install
+npm start # Starts server at http://localhost:3000
+```
+*(If no API Key is provided, the backend falls back to high-fidelity mock scenario evaluations).*
 
-# Install & run the frontend
+### 3. Run the Frontend
+```bash
 cd frontend
-npm install
-npm run dev
-# → http://localhost:5173
-```
-
-> The frontend runs standalone with mock data. No backend required to demo the full UI.
-
----
-
-## Project Structure
-
-```
-ScopeCreep.ai/
-├── frontend/
-│   ├── src/
-│   │   ├── App.jsx                    # Root shell — navbar + dashboard
-│   │   ├── main.jsx                   # Entry point
-│   │   ├── index.css                  # Design tokens (Slate & Crimson)
-│   │   ├── components/
-│   │   │   ├── DashboardLayout.jsx    # 3-column grid + state management
-│   │   │   ├── PrdInputHub.jsx        # PRD baseline input panel
-│   │   │   ├── DevChatSimulator.jsx   # Developer chat simulator
-│   │   │   ├── WatchdogAlertsFeed.jsx # Alert feed with dismiss/escalate
-│   │   │   ├── StatusBadge.jsx        # Severity pill (HIGH/MEDIUM/LOW)
-│   │   │   └── ActionButton.jsx       # Animated button primitive
-│   │   └── data/
-│   │       └── mockAlerts.json        # 3 realistic scope creep scenarios
-│   ├── index.html
-│   ├── vite.config.js
-│   └── package.json
-├── docs/
-│   ├── project_overview.md            # System architecture spec
-│   └── roles_mind_the_product.md      # 4 async development roles
-├── LICENSE
-└── README.md
+pnpm install
+npm run dev # Starts Vite server at http://localhost:5173
 ```
 
 ---
 
-## API Contract
+## 📊 Telemetry Events (Novus.ai / Pendo)
+The dashboard instruments custom client-side analytics trackers on key PM actions:
 
-The frontend is wired to `POST /api/analyze` with the following schema:
-
-**Request:**
-```json
-{
-  "prdContext": "Only email/password validation fixes are authorized for Sprint 14.",
-  "chatInput": "Adding OAuth2 support for Google while I'm in the auth module."
-}
-```
-
-**Response:**
-```json
-{
-  "alert_id": "alert_20260617_001",
-  "is_scope_creep": true,
-  "severity": "HIGH",
-  "flagged_action": "Adding OAuth2 support for Google.",
-  "prd_violation": "PRD scopes auth work to email/password validation only.",
-  "recommendation": "Pause OAuth2 work. Raise a new ticket for PM review."
-}
-```
-
----
-
-## Telemetry (Novus.ai)
-
-Two behavioral events are instrumented on the alert action buttons:
-
-| Event | Trigger | Payload |
+| Event Name | Trigger | Captured Metadata |
 |---|---|---|
-| `Alert Dismissed` | PM closes a false positive | `{ severity }` |
-| `Alert Escalated` | PM confirms real scope creep | `{ duration_ms }` |
-
-> The **Dismiss vs. Escalate ratio** is the north-star product metric for prompt tuning.
-
----
-
-## License
-
-MIT — see [LICENSE](./LICENSE) for details.
-
-Built for the **Mind the Product "Everyone Ships Now" Hackathon** © 2026.
+| `PRD Baseline Established` | PM locks the PRD scope | `charCount`, `wordCount` |
+| `Scope Analysis Completed` | Successful AI evaluation | `is_scope_creep`, `severity`, `alert_id` |
+| `Alert Dismissed` | PM dismisses a false positive alert | `severity`, `alertId`, `alert_age_ms` |
+| `Alert Escalated` | PM dispatches alert for Slack mitigation | `severity`, `duration_ms` (time-to-act) |
