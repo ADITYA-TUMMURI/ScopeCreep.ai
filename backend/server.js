@@ -41,15 +41,16 @@ function getTestDataset() {
 }
 
 // The core intelligence engine (live Gemini API vs high-fidelity Mock fallback)
-async function performAnalysis(prdContext, chatInput) {
-  const apiKey = process.env.GEMINI_API_KEY;
+async function performAnalysis(prdContext, chatInput, customApiKey) {
+  const apiKey = customApiKey || process.env.GEMINI_API_KEY;
+  const hasValidKey = apiKey && apiKey !== "your_gemini_api_key_here";
 
-  if (apiKey && apiKey !== "your_gemini_api_key_here") {
-    console.log(`[Watchdog Engine] Running live analysis via Gemini 2.5 Flash API...`);
+  if (hasValidKey) {
+    console.log(`[Watchdog Engine] Running live analysis via Gemini 3.5 Flash API... ${customApiKey ? "(Using custom user key)" : "(Using system fallback key)"}`);
     const systemPrompt = getSystemPrompt();
     const userPrompt = `### PRD Context:\n${prdContext}\n\n### Developer Message:\n${chatInput}\n`;
 
-    let url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+    let url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent";
     const headers = { "Content-Type": "application/json" };
 
     if (apiKey.startsWith("AIza")) {
@@ -94,7 +95,7 @@ async function performAnalysis(prdContext, chatInput) {
   }
 
   // High-Fidelity Mock Mode
-  console.log(`[Watchdog Engine] Running in Mock Mode (No Gemini API Key)`);
+  console.log(`[Watchdog Engine] Running in Mock Mode`);
   const dataset = getTestDataset();
 
   // Try to find matching simulation case from test dataset
@@ -132,12 +133,14 @@ async function performAnalysis(prdContext, chatInput) {
   const lowerInput = chatInput.toLowerCase();
   const lowerPrd = prdContext.toLowerCase();
 
-  const isOAuth = lowerInput.includes("oauth") || lowerInput.includes("google login") || lowerInput.includes("github login");
-  const isAnalytics = lowerInput.includes("mixpanel") || lowerInput.includes("analytics") || lowerInput.includes("telemetry");
-  const isCaching = lowerInput.includes("redis") || lowerInput.includes("cache") || lowerInput.includes("caching");
-  const isExport = lowerInput.includes("export") || lowerInput.includes("csv") || lowerInput.includes("pdf");
-  const isLocalization = lowerInput.includes("i18n") || lowerInput.includes("translate") || lowerInput.includes("translation");
-  const isMigration = lowerInput.includes("vue") || lowerInput.includes("migrate") || lowerInput.includes("framework");
+  const isOAuth = lowerInput.includes("oauth") || lowerInput.includes("google login") || lowerInput.includes("facebook login") || lowerInput.includes("github login");
+  const isAnalytics = lowerInput.includes("mixpanel") || lowerInput.includes("analytics") || lowerInput.includes("telemetry") || lowerInput.includes("amplitude") || lowerInput.includes("segment");
+  const isCaching = lowerInput.includes("redis") || lowerInput.includes("cache") || lowerInput.includes("caching") || lowerInput.includes("memcached");
+  const isExport = lowerInput.includes("export") || lowerInput.includes("csv") || lowerInput.includes("pdf") || lowerInput.includes("excel") || lowerInput.includes("download report");
+  const isLocalization = lowerInput.includes("i18n") || lowerInput.includes("translate") || lowerInput.includes("translation") || lowerInput.includes("localization");
+  const isMigration = lowerInput.includes("vue") || lowerInput.includes("migrate") || lowerInput.includes("framework") || lowerInput.includes("typescript") || lowerInput.includes("refactor") || lowerInput.includes("rewrite");
+  const isPayments = lowerInput.includes("stripe") || lowerInput.includes("payment") || lowerInput.includes("billing") || lowerInput.includes("checkout") || lowerInput.includes("paypal") || lowerInput.includes("subscription");
+  const isUI = lowerInput.includes("dark mode") || lowerInput.includes("theme") || lowerInput.includes("animation") || lowerInput.includes("layout overhaul") || lowerInput.includes("css styling") || lowerInput.includes("sound") || lowerInput.includes("audio");
 
   let isCreep = false;
   let severity = "NONE";
@@ -145,22 +148,22 @@ async function performAnalysis(prdContext, chatInput) {
   let prdViolation = "";
   let recommendation = "";
 
-  if ((isOAuth && !lowerPrd.includes("oauth")) || (isMigration && !lowerPrd.includes("vue"))) {
+  if ((isOAuth && !lowerPrd.includes("oauth")) || (isMigration && !lowerPrd.includes("migrate") && !lowerPrd.includes("refactor")) || (isPayments && !lowerPrd.includes("payment") && !lowerPrd.includes("stripe"))) {
     isCreep = true;
     severity = "HIGH";
-    flaggedAction = isOAuth ? "Adding OAuth2 third-party authentication." : "Migrating the frontend framework.";
+    flaggedAction = isOAuth ? "Adding OAuth2 third-party authentication." : isPayments ? "Integrating third-party payment gateways (Stripe/PayPal)." : "Re-architecting frontend framework or codebase.";
     prdViolation = "Adding major infrastructure/framework elements not listed in the PRD.";
     recommendation = "Halt development. This is a high-risk change. Open a separate Epic for product review.";
-  } else if ((isCaching && !lowerPrd.includes("redis")) || (isExport && !lowerPrd.includes("export")) || (isAnalytics && !lowerPrd.includes("mixpanel"))) {
+  } else if ((isCaching && !lowerPrd.includes("redis")) || (isExport && !lowerPrd.includes("export")) || (isAnalytics && !lowerPrd.includes("mixpanel") && !lowerPrd.includes("analytics"))) {
     isCreep = true;
     severity = "MEDIUM";
     flaggedAction = isCaching ? "Adding in-memory database caching." : isExport ? "Adding file exports." : "Integrating third-party analytics SDK.";
     prdViolation = "Implementing additional secondary services/features not approved in the active sprint.";
     recommendation = "Pause this work. Log a JIRA ticket for the next sprint planning session.";
-  } else if (lowerInput.includes("sound") || lowerInput.includes("audio") || lowerInput.includes("animation")) {
+  } else if (isUI && !lowerPrd.includes("theme") && !lowerPrd.includes("dark mode") && !lowerPrd.includes("animation")) {
     isCreep = true;
     severity = "LOW";
-    flaggedAction = "Adding sound effects / custom animations.";
+    flaggedAction = "Adding visual effects / custom animations / theme overhauls.";
     prdViolation = "Gold-plating UI elements outside the core specification.";
     recommendation = "Remove gold-plating. Stick strictly to scoped layout specifications.";
   }
@@ -191,6 +194,8 @@ app.post("/api/prd", (req, res) => {
 // 2. POST /api/chat-simulate - Simulate message ingestion statefully
 app.post("/api/chat-simulate", async (req, res) => {
   const { chatInput } = req.body;
+  const customApiKey = req.headers["x-gemini-api-key"];
+  
   if (!chatInput || typeof chatInput !== "string") {
     return res.status(400).json({ error: "Missing or invalid chatInput string in request body." });
   }
@@ -200,7 +205,7 @@ app.post("/api/chat-simulate", async (req, res) => {
   }
 
   try {
-    const analysis = await performAnalysis(prdContextInMemory, chatInput);
+    const analysis = await performAnalysis(prdContextInMemory, chatInput, customApiKey);
     
     if (analysis.is_scope_creep) {
       const alertRecord = {
@@ -229,12 +234,14 @@ app.get("/api/alerts", (req, res) => {
 // 4. POST /api/analyze - Stateless endpoint used directly by React UI
 app.post("/api/analyze", async (req, res) => {
   const { prdContext, chatInput } = req.body;
+  const customApiKey = req.headers["x-gemini-api-key"];
+  
   if (!prdContext || !chatInput) {
     return res.status(400).json({ error: "Missing prdContext or chatInput in request body." });
   }
 
   try {
-    const analysis = await performAnalysis(prdContext, chatInput);
+    const analysis = await performAnalysis(prdContext, chatInput, customApiKey);
     res.json(analysis);
   } catch (error) {
     res.status(500).json({ error: `Analysis engine error: ${error.message}` });

@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-06-20T19:20:01.609025",
-  "mode": "simulation",
+  "timestamp": "2026-06-20T19:50:00.230189",
+  "mode": "api",
   "summary": {
-    "total": 25,
-    "valid_format_count": 25,
-    "accurate_count": 25
+    "total": 30,
+    "valid_format_count": 30,
+    "accurate_count": 30
   },
   "detailed_results": [
     {
@@ -34,7 +34,7 @@
         "severity": "NONE"
       },
       "actual": {
-        "alert_id": "alert_20260618_002",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": false,
         "severity": "NONE",
         "flagged_action": "",
@@ -53,7 +53,7 @@
         "severity": "NONE"
       },
       "actual": {
-        "alert_id": "alert_20260618_003",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": false,
         "severity": "NONE",
         "flagged_action": "",
@@ -72,7 +72,7 @@
         "severity": "NONE"
       },
       "actual": {
-        "alert_id": "alert_20260618_004",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": false,
         "severity": "NONE",
         "flagged_action": "",
@@ -91,7 +91,7 @@
         "severity": "NONE"
       },
       "actual": {
-        "alert_id": "alert_20260618_005",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": false,
         "severity": "NONE",
         "flagged_action": "",
@@ -110,7 +110,7 @@
         "severity": "NONE"
       },
       "actual": {
-        "alert_id": "alert_20260618_006",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": false,
         "severity": "NONE",
         "flagged_action": "",
@@ -129,7 +129,7 @@
         "severity": "NONE"
       },
       "actual": {
-        "alert_id": "alert_20260618_007",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": false,
         "severity": "NONE",
         "flagged_action": "",
@@ -167,7 +167,7 @@
         "severity": "NONE"
       },
       "actual": {
-        "alert_id": "alert_20260618_009",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": false,
         "severity": "NONE",
         "flagged_action": "",
@@ -186,7 +186,7 @@
         "severity": "NONE"
       },
       "actual": {
-        "alert_id": "alert_20260618_010",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": false,
         "severity": "NONE",
         "flagged_action": "",
@@ -208,9 +208,9 @@
         "alert_id": "alert_20260618_001",
         "is_scope_creep": true,
         "severity": "HIGH",
-        "flagged_action": "Flagged action for creep_001",
-        "prd_violation": "Violation of the baseline: Sprint 14 scope: Fix authentication validation bug...",
-        "recommendation": "Pause the unapproved work."
+        "flagged_action": "Adding OAuth2 support for Google and GitHub authentication.",
+        "prd_violation": "The developer is attempting to implement net-new third-party OAuth2 integrations (Google and GitHub) during Sprint 14, which is strictly scoped to fixing email validation bugs and edge cases.",
+        "recommendation": "Instruct the developer to halt the OAuth2 implementation immediately. Direct them to focus solely on the email validation bug fixes scoped for Sprint 14. Create a separate backlog item for OAuth2 support to be prioritized and scheduled for a future sprint."
       },
       "valid_format": true,
       "validation_errors": [],
@@ -224,12 +224,12 @@
         "severity": "MEDIUM"
       },
       "actual": {
-        "alert_id": "alert_20260618_002",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": true,
         "severity": "MEDIUM",
-        "flagged_action": "Flagged action for creep_002",
-        "prd_violation": "Violation of the baseline: Sprint 14 scope: Correct the landing page header c...",
-        "recommendation": "Pause the unapproved work."
+        "flagged_action": "Migrating user preferences to a new tabbed layout with collapsible sections and keyboard navigation.",
+        "prd_violation": "The developer is implementing a major UX overhaul of the settings page (tabbed layout, collapsible sections, keyboard navigation). This is completely outside the Sprint 14 scope, which is strictly limited to correcting the landing page header copy.",
+        "recommendation": "Revert the settings layout changes and keyboard navigation implementation. Instruct the developer to focus exclusively on updating the landing page header copy. If the settings refactor is necessary, it should be logged as a separate ticket and prioritized for a future sprint."
       },
       "valid_format": true,
       "validation_errors": [],
@@ -243,12 +243,12 @@
         "severity": "LOW"
       },
       "actual": {
-        "alert_id": "alert_20260618_003",
+        "alert_id": "alert_20260618_001",
         "is_scope_creep": true,
         "severity": "LOW",
-        "flagged_action": "Flagged action for creep_003",
-        "prd_violation": "Violation of the baseline: Sprint 14 scope: Investigate and log backend API t...",
-        "recommendation": "Pause the unapproved work."
+        "flagged_action": "Implemented a retry wrapper with exponential backoff around the payment webhook handler.",
+        "prd_violation": "The approved Sprint 14 scope was strictly limited to investigating and logging backend API timeout issues on the webhook endpoint. Implementing an active retry mechanism with exponential backoff goes beyond investigation and logging, introducing potential side effects (e.g., duplicate processing, increased load) without prior product approval.",
+        "recommendation": "Revert the retry wrapper implementation. Focus strictly on logging and diagnosing the timeout issues as scoped. If a retry mechanism is deemed necessary after the investigation, create a separate ticket for a future sprint to properly design, test, and approve the retry logic."
       },
       "valid_format": true,
       "validation_errors": [],
@@ -477,6 +477,101 @@
         "flagged_action": "Flagged action for adv_005",
         "prd_violation": "Violation of the baseline: Sprint 14 scope: Center logo image on landing page...",
         "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "adv_006",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "MEDIUM"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_006",
+        "is_scope_creep": true,
+        "severity": "MEDIUM",
+        "flagged_action": "Flagged action for adv_006",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Fix memory leak in background wor...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "adv_007",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_007",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "adv_008",
+      "type": "creep",
+      "expected": {
+        "is_scope_creep": true,
+        "severity": "HIGH"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_008",
+        "is_scope_creep": true,
+        "severity": "HIGH",
+        "flagged_action": "Flagged action for adv_008",
+        "prd_violation": "Violation of the baseline: Sprint 14 scope: Add email newsletter signup butto...",
+        "recommendation": "Pause the unapproved work."
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "adv_009",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_009",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
+      },
+      "valid_format": true,
+      "validation_errors": [],
+      "accurate": true
+    },
+    {
+      "id": "adv_010",
+      "type": "safe",
+      "expected": {
+        "is_scope_creep": false,
+        "severity": "NONE"
+      },
+      "actual": {
+        "alert_id": "alert_20260618_010",
+        "is_scope_creep": false,
+        "severity": "NONE",
+        "flagged_action": "",
+        "prd_violation": "",
+        "recommendation": ""
       },
       "valid_format": true,
       "validation_errors": [],
