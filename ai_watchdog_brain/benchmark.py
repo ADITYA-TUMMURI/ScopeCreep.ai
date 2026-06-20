@@ -6,6 +6,7 @@ import urllib.request
 import urllib.error
 import argparse
 from datetime import datetime
+import time
 
 # Define color codes for pretty output
 GREEN = "\033[92m"
@@ -275,6 +276,10 @@ def run_live_api(dataset, system_prompt, api_key):
             print(f"    {RED}↳ Format/Validation Errors: {validation_errors}{RESET}")
         elif not accurate:
             print(f"    {YELLOW}↳ Accuracy mismatch. Expected: {expected}, Got: is_scope_creep={response_dict.get('is_scope_creep')}, severity={response_dict.get('severity')}{RESET}")
+            
+        # Respect 5 RPM free tier limit for Gemini 2.5 Flash
+        if i < total_scenarios - 1:
+            time.sleep(13)
             
     # Calculate stats
     fmt_rate = (passed_validations / total_scenarios) * 100
